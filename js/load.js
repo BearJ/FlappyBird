@@ -1,6 +1,6 @@
 var stateLoad = {
     preload: function () {
-        var preloadSprite = game.add.sprite(35, game.height / 2, "loading"); //创建显示loading进度的sprite
+        var preloadSprite = game.add.sprite(35, game.world.centerY, "loading"); //创建显示loading进度的sprite
         game.load.setPreloadSprite(preloadSprite);
 
         // 以下为要加载的资源
