@@ -1,7 +1,7 @@
 var stateMenu = {
     create: function() {
         game.add.tileSprite(0, 0, game.width, game.height, "background"); // 背景
-        game.add.tileSprite(0, game.height - 112, game.width, 112, "ground").autoScroll(-setting.speed * 10, 0); // 地板
+        game.add.tileSprite(0, game.height - 112, game.width, 112, "ground").autoScroll(-setting.speed, 0); // 地板
 
         // 标题
         var title = game.add.sprite(game.world.centerX, 100, "title");

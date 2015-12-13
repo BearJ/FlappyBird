@@ -1,7 +1,6 @@
 var game = new Phaser.Game(288, 512, Phaser.AUTO, "flappybird");
 var setting = {
-    score: 0,
-    speed: 10
+    speed: 100
 };
 
 // 加载每个state
