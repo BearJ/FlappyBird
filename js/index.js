@@ -8,7 +8,6 @@ var setting = {
 game.state.add("boot", stateBoot);
 game.state.add("load", stateLoad);
 game.state.add("menu", stateMenu);
-game.state.add("ready", stateReady);
 game.state.add("play", statePlay);
 game.state.add("gameover", stateGameOver);
 
