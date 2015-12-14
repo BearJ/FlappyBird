@@ -1,3 +1,4 @@
+var BIRDX = 80;
 var statePlay = {
     create: function() {
         var bg = game.add.tileSprite(0, 0, game.width, game.height, "background"); // 背景
@@ -12,7 +13,8 @@ var statePlay = {
         // 地面
         var ground = game.add.tileSprite(0, game.height - 112, game.width, 112, "ground"); // 地板
         game.physics.enable(ground, Phaser.Physics.ARCADE); // 物理引擎
-        ground.body.immovable = true;
+        ground.body.immovable = true; // 当碰撞发生时，地面固定不动
+
         ground.autoScroll(-setting.speed, 0);
         this.ground = ground;
 
@@ -21,12 +23,10 @@ var statePlay = {
         readyText.anchor.setTo(.5, .5);
 
         // 小鸟
-        var birdTop = 200,
-            bird = game.add.sprite(game.world.centerX - 80, 200, "bird");
+        var bird = game.add.sprite(BIRDX, 200, "bird");
         bird.animations.add("fly");
         bird.animations.play("fly", 8, true);
         bird.anchor.setTo(.5, .5);
-        game.add.tween(bird).to({y: birdTop + 10}, 350, null, true, 0, Number.MAX_VALUE, true);
         game.physics.enable(bird, Phaser.Physics.ARCADE); // 物理引擎
         bird.body.gravity.y = 0;
         this.bird = bird;
@@ -37,28 +37,76 @@ var statePlay = {
 
         // 分数
         var score = 0,
-            scoreText = game.add.bitmapText(game.world.centerX, 40, 'flappy_font', '0', 36);
+            scoreText = game.add.bitmapText(game.world.centerX, 40, "flappy_font", "0", 36);
         scoreText.anchor.setTo(.5,.5);
         this.score = score;
         this.scoreText = scoreText;
 
         // 生效
-        this.soundFly = game.add.sound('fly_sound');
-        this.soundScore = game.add.sound('score_sound');
-        this.soundHitPipe = game.add.sound('hit_pipe_sound');
-        this.soundHitGround = game.add.sound('hit_ground_sound');
-        this.soundSwooshing = game.add.sound('swooshing');
+        this.sound.fly = game.add.sound("wing");
+        this.sound.point = game.add.sound("point");
+        this.sound.hit = game.add.sound("hit");
+        this.sound.die = game.add.sound("die");
+        this.sound.swooshing = game.add.sound("swooshing");
 
         // 游戏是否开始
-        this.isStarted = false;
+        this.isPlaying = false;
 
         // 点击开始
         game.input.onDown.addOnce(function(){
             readyText.destroy();
             tutorial.destroy();
-            this.isStarted = true;
-            game.time.events.loop(setting.speed * 15, this.createPipes, this);
+            this.sound.swooshing.play();
+            this.start();
         }, this);
+    },
+    update: function() {
+        game.physics.arcade.collide(this.bird, this.ground, this.hit, null, this); //与地面碰撞
+
+        if(!this.isPlaying) return;
+        game.physics.arcade.overlap(this.bird, this.pipes, this.hit, null, this); //与管道碰撞
+
+        if(this.bird.angle < 90) this.bird.angle += 1.5; //下降时头朝下
+        // 检查分数
+        this.pipes.forEachAlive(function(pipe){
+            if(pipe.y > 0 || pipe.scored) return; // 只检查没被检查过的上管道即可
+            if(pipe.x < BIRDX - 52){ // 52是管道的宽度
+                this.sound.point.play();
+                pipe.scored = true;
+                this.scoreText.text = ++this.score;
+            }
+        }, this);
+    },
+    /**
+     * 游戏开始
+     */
+    start: function() {
+        this.isPlaying = true;
+        game.time.events.loop(setting.speed * 18, this.createPipes, this);
+        this.bird.body.gravity.y = 1000;
+        game.input.onDown.add(this.fly, this);
+    },
+    /**
+     * 游戏结束
+     */
+    stop: function() {
+        this.sound.die.play();
+        this.isPlaying = false;
+        this.ground.stopScroll();
+        this.pipes.forEachExists(function(pipe){
+            pipe.body.velocity.x = 0;
+        }, this);
+        this.bird.animations.stop("fly", 0);
+        game.input.onDown.remove(this.fly, this);
+        game.time.events.stop(true);
+    },
+    /**
+     * 小鸟飞翔
+     */
+    fly: function() {
+        this.sound.fly.play();
+        this.bird.body.velocity.y = -300;
+        game.add.tween(this.bird).to({angle:-30}, 50, null, true, 0, 0, false); //上升时头朝上
     },
     /**
      * 生成管道
@@ -70,10 +118,7 @@ var statePlay = {
             topPos = pos - 320, // 320为管道的长度
             bottomPos = pos + gap;
 
-        if(this.resetPipe(topPos, bottomPos)){
-            this.scoreText.text = ++this.score;
-            return;
-        }
+        if(this.resetPipe(topPos, bottomPos)) return;
 
         var topPipe = game.add.sprite(game.width, topPos, "pipe_down"); // 320为pipe图片的高度
         var bottomPipe = game.add.sprite(game.width, bottomPos, "pipe_up");
@@ -85,9 +130,9 @@ var statePlay = {
         //bottomPipe.checkWorldBounds = true;
         //bottomPipe.outOfBoundsKill = true;
         //bottomPipe.body.velocity.x = -setting.speed;
-        this.pipes.setAll('checkWorldBounds', true);
-        this.pipes.setAll('outOfBoundsKill', true);
-        this.pipes.setAll('body.velocity.x', -setting.speed);
+        this.pipes.setAll("checkWorldBounds", true);
+        this.pipes.setAll("outOfBoundsKill", true);
+        this.pipes.setAll("body.velocity.x", -setting.speed);
     },
     /**
      * 管道回收
@@ -101,8 +146,16 @@ var statePlay = {
                 pipe.reset(game.width, bottom);
             }
             pipe.body.velocity.x = -setting.speed;
+            pipe.scored = false;
             ++i;
         }, this);
         return i == 2;
+    },
+    /**
+     * 撞到管子/地板
+     */
+    hit: function() {
+        this.sound.hit.play();
+        this.stop();
     }
 };
