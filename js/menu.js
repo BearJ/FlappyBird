@@ -8,8 +8,8 @@ var stateMenu = {
         title.anchor.setTo(.5, .5);
 
         // 小鸟
-        var birdTop = 150,
-            bird = game.add.sprite(game.world.centerX, 150, "bird");
+        var birdTop = 200,
+            bird = game.add.sprite(game.world.centerX, birdTop, "bird");
         bird.animations.add("fly");
         bird.animations.play("fly", 8, true);
         bird.anchor.setTo(.5, .5);

@@ -1,6 +1,7 @@
 var BIRDX = 80;
 var statePlay = {
     create: function() {
+        console.log("create");
         var bg = game.add.tileSprite(0, 0, game.width, game.height, "background"); // 背景
 
         // 管道组
@@ -81,8 +82,10 @@ var statePlay = {
      * 游戏开始
      */
     start: function() {
+        console.log("start");
         this.isPlaying = true;
         game.time.events.loop(setting.speed * 18, this.createPipes, this);
+        game.time.events.start();
         this.bird.body.gravity.y = 1000;
         game.input.onDown.add(this.fly, this);
     },
@@ -100,6 +103,28 @@ var statePlay = {
         this.bird.animations.stop("fly", 0);
         game.input.onDown.remove(this.fly, this);
         game.time.events.stop(true);
+
+        this.scoreText.destroy();
+
+        // 显示GameOver
+        var bestScore = parseInt(localStorage.getItem("FlappyBirdBest")) || 0;
+        if(this.score > bestScore) bestScore = this.score;
+        localStorage.setItem("FlappyBirdBest", bestScore);
+
+        var gameOverText = game.add.sprite(game.width / 2, 100, "game_over"); //game over 文字图片
+        gameOverText.anchor.setTo(0.5, 0.5);
+
+        var scorePanelGroup = game.add.group(); //添加一个组
+        var scoreboard = scorePanelGroup.create(game.width / 2, 0, "score_board"); //分数板
+        scoreboard.anchor.setTo(0.5, 0);
+        game.add.bitmapText(scoreboard.x + 80, 37, "flappy_font", "" + this.score, 20, scorePanelGroup); //当前分数
+        game.add.bitmapText(scoreboard.x + 80, 80, "flappy_font", "" + bestScore, 20, scorePanelGroup); //最好分数
+        scorePanelGroup.y = 150;
+
+        var replayBtn = game.add.button(game.width / 2, game.height - 112, "play_btn", function () {//重玩按钮
+            game.state.start("play");
+        }, this);
+        replayBtn.anchor.setTo(0.5, 1);
     },
     /**
      * 小鸟飞翔
@@ -113,6 +138,7 @@ var statePlay = {
      * 生成管道
      */
     createPipes: function(gap){
+        console.log("createPipes");
         gap = gap || 100;
         var min = 50;
         var pos = Math.floor(Math.random() * (game.height - 112 - min * 2 - gap)) + min, // 随机出缺口的pos, 112是地面的高度

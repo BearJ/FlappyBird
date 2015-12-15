@@ -28,6 +28,6 @@ var stateLoad = {
     },
 
     create: function () {
-        game.state.start("play"); //跳转到资源加载页面
+        game.state.start("menu"); //跳转到资源加载页面
     }
 };
