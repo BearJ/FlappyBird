@@ -17,6 +17,7 @@ var stateMenu = {
 
         // 开始按钮
         var startBtn = game.add.button(game.world.centerX, game.height - 112, "play_btn", function(){
+            game.add.sound("swooshing").play();
             game.state.start("play");
         });
         startBtn.anchor.setTo(.5, 1);

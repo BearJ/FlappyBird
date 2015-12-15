@@ -117,11 +117,12 @@ var statePlay = {
         var scorePanelGroup = game.add.group(); //添加一个组
         var scoreboard = scorePanelGroup.create(game.width / 2, 0, "score_board"); //分数板
         scoreboard.anchor.setTo(0.5, 0);
-        game.add.bitmapText(scoreboard.x + 80, 37, "flappy_font", "" + this.score, 20, scorePanelGroup); //当前分数
-        game.add.bitmapText(scoreboard.x + 80, 80, "flappy_font", "" + bestScore, 20, scorePanelGroup); //最好分数
+        game.add.bitmapText(scoreboard.x + 90, 37, "flappy_font", "" + this.score, 24, scorePanelGroup).anchor.setTo(1, 0); //当前分数
+        game.add.bitmapText(scoreboard.x + 90, 80, "flappy_font", "" + bestScore, 24, scorePanelGroup).anchor.setTo(1, 0); //最好分数
         scorePanelGroup.y = 150;
 
         var replayBtn = game.add.button(game.width / 2, game.height - 112, "play_btn", function () {//重玩按钮
+            this.sound.swooshing.play();
             game.state.start("play");
         }, this);
         replayBtn.anchor.setTo(0.5, 1);
