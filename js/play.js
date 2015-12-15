@@ -61,16 +61,16 @@ var statePlay = {
         }, this);
     },
     update: function() {
-        game.physics.arcade.collide(this.bird, this.ground, this.hit, null, this); //与地面碰撞
+        game.physics.arcade.collide(this.bird, this.ground, this.hitGround, null, this); //与地面碰撞
 
         if(!this.isPlaying) return;
-        game.physics.arcade.overlap(this.bird, this.pipes, this.hit, null, this); //与管道碰撞
+        game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this); //与管道碰撞
 
         if(this.bird.angle < 90) this.bird.angle += 1.5; //下降时头朝下
         // 检查分数
         this.pipes.forEachAlive(function(pipe){
             if(pipe.y > 0 || pipe.scored) return; // 只检查没被检查过的上管道即可
-            if(pipe.x < BIRDX - 52){ // 52是管道的宽度
+            if(pipe.x < BIRDX - 26){ // 52是管道的宽度的一半
                 this.sound.point.play();
                 pipe.scored = true;
                 this.scoreText.text = ++this.score;
@@ -90,7 +90,8 @@ var statePlay = {
      * 游戏结束
      */
     stop: function() {
-        this.sound.die.play();
+        if(!this.isPlaying) return;
+
         this.isPlaying = false;
         this.ground.stopScroll();
         this.pipes.forEachExists(function(pipe){
@@ -155,7 +156,21 @@ var statePlay = {
      * 撞到管子/地板
      */
     hit: function() {
+        if(!this.isPlaying) return;
+
         this.sound.hit.play();
         this.stop();
+    },
+
+    hitGround: function(){
+        this.hit();
+    },
+
+    hitPipe: function(){
+        if(!this.isPlaying) return;
+
+        this.sound.die.play();
+        this.hit();
     }
+
 };

@@ -14,11 +14,11 @@ var stateLoad = {
         game.load.image("pipe_up", "img/pipe_up.png"); //上管道
         game.load.image("pipe_down", "img/pipe_down.png"); //下管道
 
-        game.load.audio("wing", "ogg/sfx_wing.ogg");//飞翔的音效
-        game.load.audio("point", "ogg/sfx_point.ogg");//得分的音效
-        game.load.audio("hit", "ogg/sfx_hit.ogg"); //撞击管道的音效
-        game.load.audio("die", "ogg/sfx_die.ogg"); //撞击地面的音效
-        game.load.audio("swooshing", "ogg/sfx_swooshing.ogg"); // 按钮出现的音效
+        game.load.audio("wing", "sound/sfx_wing.mp3");//飞翔的音效
+        game.load.audio("point", "sound/sfx_point.mp3");//得分的音效
+        game.load.audio("hit", "sound/sfx_hit.mp3"); //撞击管道的音效
+        game.load.audio("die", "sound/sfx_die.mp3"); //撞击地面的音效
+        game.load.audio("swooshing", "sound/sfx_swooshing.mp3"); // 按钮出现的音效
 
         game.load.image("tutorial", "img/tutorial.png"); //指引
         game.load.image("ready_text", "img/text_ready.png");
