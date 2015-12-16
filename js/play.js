@@ -1,14 +1,11 @@
 var BIRDX = 80;
 var statePlay = {
     create: function() {
-        console.log("create");
         var bg = game.add.tileSprite(0, 0, game.width, game.height, "background"); // 背景
 
         // 管道组
         var pipes = game.add.group();
         pipes.enableBody = true;
-        //pipes.physicsBodyType = Phaser.Physics.ARCADE;
-        //pipes.body.velocity.x = -setting.speed; // TODO 不能整组移动？
         this.pipes = pipes;
 
         // 地面
@@ -82,7 +79,6 @@ var statePlay = {
      * 游戏开始
      */
     start: function() {
-        console.log("start");
         this.isPlaying = true;
         game.time.events.loop(setting.speed * 18, this.createPipes, this);
         game.time.events.start();
@@ -139,7 +135,6 @@ var statePlay = {
      * 生成管道
      */
     createPipes: function(gap){
-        console.log("createPipes");
         gap = gap || 100;
         var min = 50;
         var pos = Math.floor(Math.random() * (game.height - 112 - min * 2 - gap)) + min, // 随机出缺口的pos, 112是地面的高度
@@ -152,12 +147,6 @@ var statePlay = {
         var bottomPipe = game.add.sprite(game.width, bottomPos, "pipe_up");
         this.pipes.add(topPipe);
         this.pipes.add(bottomPipe);
-        //topPipe.checkWorldBounds = true; // 检测边界
-        //topPipe.outOfBoundsKill = true; // 当超出边界时回收
-        //topPipe.body.velocity.x = -setting.speed;
-        //bottomPipe.checkWorldBounds = true;
-        //bottomPipe.outOfBoundsKill = true;
-        //bottomPipe.body.velocity.x = -setting.speed;
         this.pipes.setAll("checkWorldBounds", true);
         this.pipes.setAll("outOfBoundsKill", true);
         this.pipes.setAll("body.velocity.x", -setting.speed);

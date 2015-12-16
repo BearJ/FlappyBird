@@ -3,7 +3,6 @@ var stateBoot = {
     preload: function () {
         if (!game.device.desktop) { // 移动设备适应
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; // 等比缩放，占满屏幕
-            //this.scale.forcePortrait = true; // 横屏的时候强制显示全部
             this.scale.refresh();
         }
         game.load.image("loading", "img/loading.gif");
