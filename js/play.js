@@ -5,15 +5,14 @@ var statePlay = {
 
         // 管道组
         var pipes = game.add.group();
-        pipes.enableBody = true;
+        pipes.enableBody = true; // If true all Sprites created by, or added to this group, will have a physics body enabled on them.
         this.pipes = pipes;
 
         // 地面
         var ground = game.add.tileSprite(0, game.height - 112, game.width, 112, "ground"); // 地板
-        game.physics.enable(ground, Phaser.Physics.ARCADE); // 物理引擎
+        game.physics.enable(ground); // 拥有物理引擎
         ground.body.immovable = true; // 当碰撞发生时，地面固定不动
-
-        ground.autoScroll(-setting.speed, 0);
+        ground.autoScroll(-setting.speed, 0); // x, y
         this.ground = ground;
 
         // Get Ready
@@ -25,7 +24,7 @@ var statePlay = {
         bird.animations.add("fly");
         bird.animations.play("fly", 8, true);
         bird.anchor.setTo(.5, .5);
-        game.physics.enable(bird, Phaser.Physics.ARCADE); // 物理引擎
+        game.physics.enable(bird, Phaser.Physics.ARCADE);
         bird.body.gravity.y = 0;
         this.bird = bird;
 
@@ -40,7 +39,7 @@ var statePlay = {
         this.score = score;
         this.scoreText = scoreText;
 
-        // 生效
+        // 声效
         this.sound.fly = game.add.sound("wing");
         this.sound.point = game.add.sound("point");
         this.sound.hit = game.add.sound("hit");
@@ -52,7 +51,7 @@ var statePlay = {
 
         // 点击开始
         game.input.onDown.addOnce(function(){
-            readyText.destroy();
+            readyText.destroy(); // 与kill()的区别：kill的话元素还在
             tutorial.destroy();
             this.sound.swooshing.play();
             this.start();
@@ -80,7 +79,7 @@ var statePlay = {
      */
     start: function() {
         this.isPlaying = true;
-        game.time.events.loop(parseInt(180000 / setting.speed), this.createPipes, this);
+        game.time.events.loop(parseInt(180000 / setting.speed), this.createPipes, this); // 启动一个计时器，负责生成管道
         game.time.events.start();
         this.bird.body.gravity.y = 1000;
         game.input.onDown.add(this.fly, this);
@@ -137,16 +136,16 @@ var statePlay = {
     /**
      * 生成管道
      */
-    createPipes: function(gap){
-        gap = gap || 100;
-        var min = 50;
-        var pos = Math.floor(Math.random() * (game.height - 112 - min * 2 - gap)) + min, // 随机出缺口的pos, 112是地面的高度
+    createPipes: function(){
+        var gap = 100, // 缺口高度为100
+            min = 50, // 预留50高度
+            pos = Math.floor(Math.random() * (game.height - 112 - min * 2 - gap)) + min, // 随机出缺口的pos, 112是地面的高度
             topPos = pos - 320, // 320为管道的长度
             bottomPos = pos + gap;
 
         if(this.resetPipe(topPos, bottomPos)) return;
 
-        var topPipe = game.add.sprite(game.width, topPos, "pipe_down"); // 320为pipe图片的高度
+        var topPipe = game.add.sprite(game.width, topPos, "pipe_down");
         var bottomPipe = game.add.sprite(game.width, bottomPos, "pipe_up");
         this.pipes.add(topPipe);
         this.pipes.add(bottomPipe);
@@ -175,21 +174,17 @@ var statePlay = {
      * 撞到管子/地板
      */
     hit: function() {
-        if(!this.isPlaying) return;
-
         this.sound.hit.play();
         this.stop();
     },
-
     hitGround: function(){
+        if(!this.isPlaying) return;
         this.hit();
     },
-
     hitPipe: function(){
         if(!this.isPlaying) return;
 
-        this.sound.die.play();
         this.hit();
+        this.sound.die.play();
     }
-
 };
