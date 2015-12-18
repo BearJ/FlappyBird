@@ -68,7 +68,7 @@ var statePlay = {
         // 检查分数
         this.pipes.forEachAlive(function(pipe){
             if(pipe.y > 0 || pipe.scored) return; // 只检查没被检查过的上管道即可
-            if(pipe.x < BIRDX - 26){ // 52是管道的宽度的一半
+            if(pipe.x < BIRDX - 26){ // 26是管道的宽度的一半
                 this.sound.point.play();
                 pipe.scored = true;
                 this.scoreText.text = ++this.score;
@@ -80,7 +80,7 @@ var statePlay = {
      */
     start: function() {
         this.isPlaying = true;
-        game.time.events.loop(setting.speed * 18, this.createPipes, this);
+        game.time.events.loop(parseInt(180000 / setting.speed), this.createPipes, this);
         game.time.events.start();
         this.bird.body.gravity.y = 1000;
         game.input.onDown.add(this.fly, this);
@@ -115,6 +115,9 @@ var statePlay = {
         scoreboard.anchor.setTo(0.5, 0);
         game.add.bitmapText(scoreboard.x + 90, 37, "flappy_font", "" + this.score, 24, scorePanelGroup).anchor.setTo(1, 0); //当前分数
         game.add.bitmapText(scoreboard.x + 90, 80, "flappy_font", "" + bestScore, 24, scorePanelGroup).anchor.setTo(1, 0); //最好分数
+        if(+this.score >= 10){
+            game.add.sprite(scoreboard.x - 86, 45, "medals", (+this.score >= 40 ? 4 : parseInt(+this.score / 10)) - 1, scorePanelGroup);
+        }
         scorePanelGroup.y = 150;
 
         var replayBtn = game.add.button(game.width / 2, game.height - 112, "play_btn", function () {//重玩按钮

@@ -10,7 +10,7 @@ var stateLoad = {
         game.load.spritesheet("bird", "img/bird_oriange.png", 34, 24, 3); //鸟
         game.load.image("play_btn", "img/button_play.png"); //开始按钮
 
-        game.load.bitmapFont("flappy_font", "font/font.png", "font/font.fnt");
+        game.load.bitmapFont("flappy_font", "font/font.png", "font/font.fnt"); //字体
         game.load.image("pipe_up", "img/pipe_up.png"); //上管道
         game.load.image("pipe_down", "img/pipe_down.png"); //下管道
 
@@ -25,6 +25,7 @@ var stateLoad = {
         game.load.image("play_tip", "img/tutorial.png");
         game.load.image("game_over", "img/text_game_over.png");
         game.load.image("score_board", "img/score_panel.png");
+        game.load.spritesheet("medals", "img/medals.png", 44, 44, 4); // 奖牌
     },
 
     create: function () {
