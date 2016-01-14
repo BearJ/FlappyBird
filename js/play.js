@@ -1,7 +1,7 @@
 var BIRDX = 80;
 var statePlay = {
     create: function() {
-        var bg = game.add.tileSprite(0, 0, game.width, game.height, "background"); // 背景
+        game.add.sprite(0, 0, "background"); // 背景
 
         // 管道组
         var pipes = game.add.group();
