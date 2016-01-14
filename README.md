@@ -3,4 +3,4 @@
 
 Flappy Bird game using Phaser.
 
-Click to play: \[Play](http://bearj.github.io/FlappyBird/)
+Click to play: [Play](http://bearj.github.io/FlappyBird/)
