@@ -61,7 +61,7 @@ var statePlay = {
         game.physics.arcade.collide(this.bird, this.ground, this.hitGround, null, this); //与地面碰撞
 
         if(!this.isPlaying) return;
-        game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this); //与管道碰撞
+        game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this); //与管道重叠
 
         if(this.bird.angle < 90) this.bird.angle += 1.5; //下降时头朝下
         // 检查分数
